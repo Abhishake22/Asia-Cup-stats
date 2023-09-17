@@ -1,0 +1,46 @@
+
+Team's Records in Finals
+
+WITH Matches AS (SELECT Team_A AS Team,Winner
+FROM stats
+UNION ALL
+SELECT Team_B as Team,Winner
+FROM stats
+)
+SELECT Team,COUNT(*) AS Number_of_Matches,SUM(CASE WHEN Winner = Team THEN 1 ELSE 0 END) AS Wins,SUM(CASE WHEN Winner! = Team THEN 1 ELSE 0 END) AS Loss,
+(SUM(CASE WHEN Winner = Team THEN 1 ELSE 0 END) * 100 / COUNT(*)) AS Win_percentage
+FROM Matches
+GROUP BY Team
+ORDER BY Wins desc
+
+
+
+2. Venue which hosted most number of finals
+
+SELECT Venue,COUNT(*) as Matches
+FROM stats
+GROUP BY Venue
+ORDER BY Matches desc
+
+3.Team's records at Colombo
+
+SELECT Winner as Team,Venue,Year
+FROM stats
+WHERE Venue = 'Colombo'
+GROUP BY Winner,Venue,year
+
+
+4.Records of Team's at Colombo
+
+WITH CTE AS (
+SELECT Team_A as Team, Winner,Venue
+FROM stats
+UNION ALL
+SELECT Team_B As Team, Winner,Venue
+FROM stats
+)
+SELECT Team,COUNT(*) as Matches,SUM(CASE WHEN Winner = Team THEN 1 ELSE 0 END) AS Wins,
+SUM(CASE WHEN Winner! = Team THEN 1 ELSE 0 END) AS Loss,venue
+FROM CTE
+WHERE Venue = 'Colombo'
+GROUP BY Team,Venue
